@@ -1,0 +1,66 @@
+<div class="container mx-auto p-6 bg-gray-50 shadow-md rounded-lg">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">{{titulo}}</h2>
+    
+    <button mat-flat-button routerLink="{{rutaCrear}}" 
+    class="bg-blue-600 text-white font-semibold px-4 py-2 rounded hover:bg-blue-800 transition duration-200"
+    >Crear nuevo</button>
+    
+    <app-listado-generico [listado]="entidades">
+        <ng-container contenido>
+            <table mat-table [dataSource]="entidades" class="mat-elevation-z8 indice-elementos">
+                <ng-container *ngFor="let columna of columnasAMostrar">
+                    <ng-container *ngIf="columna === 'acciones'; else checkEstado">
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef
+                            class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                            >Acciones</th>
+                            <td class="px-4 py-2 border-b border-gray-300" 
+                            mat-cell *matCellDef="let elemento">
+                                <a routerLink="{{rutaEditar + '/' + elemento[columnasAMostrar[0]]}}" mat-flat-button
+                                class="text-blue-500 hover:underline font-medium"
+                                >Editar</a>
+                                <!-- <button mat-flat-button color="warn" class="ml-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-200"
+                                [swal]="{title: 'Confirmación', text:'¿Deseas bloquear este registro?', showCancelButton: true}"
+                                (confirm)="borrar(elemento[columnasAMostrar[0]])" 
+                                >Bloquear</button> -->
+                            </td>
+                        </ng-container>
+                    </ng-container>
+    
+                    <ng-template #checkEstado>
+                        <ng-container *ngIf="columna === 'estado'; else defaultColumn">
+                            <ng-container matColumnDef="estado">
+                                <th class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                                mat-header-cell *matHeaderCellDef>Estado</th>
+                                <td class="px-4 py-2 border-b border-gray-300"
+                                mat-cell *matCellDef="let elemento">
+                                    <ng-container *ngIf="elemento[columna] === 'A'">Activo</ng-container>
+                                    <ng-container *ngIf="elemento[columna] === 'I'">Inactivo</ng-container>
+                                    <ng-container *ngIf="elemento[columna] === 'B'">Bloqueado</ng-container>
+                                </td>
+                            </ng-container>
+                        </ng-container>
+                    </ng-template>
+    
+                    <ng-template #defaultColumn>
+                        <ng-container matColumnDef="{{columna}}">
+                            <th class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                            mat-header-cell *matHeaderCellDef>{{primeraLetraEnMayuscula(columna)}}</th>
+                            <td class="px-4 py-2 border-b border-gray-300"
+                            mat-cell *matCellDef="let elemento">{{elemento[columna]}}</td>
+                        </ng-container>
+                    </ng-template>
+            </ng-container>
+    
+                <tr mat-header-row *matHeaderRowDef="columnasAMostrar"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnasAMostrar"></tr>
+            </table>
+    
+            <mat-paginator showFirstLastButtons [length]="cantidadTotalRegistros" 
+            [pageIndex]="paginacion.PageNumber-1"
+            [pageSize]="paginacion.PageSize"
+            [pageSizeOptions]="[5, 10, 50]" class="mat-elevation-z8" (page)="actualizarPaginacion($event)"></mat-paginator>
+    
+        </ng-container>
+    </app-listado-generico>
+    </div>
