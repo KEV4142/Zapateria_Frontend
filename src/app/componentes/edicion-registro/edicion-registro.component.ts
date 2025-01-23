@@ -1,7 +1,6 @@
 import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { CargandoComponent } from '../cargando/cargando.component';
 import { MostrarErroresComponent } from '../mostrar-errores/mostrar-errores.component';
-import { HeaderService } from '../../header.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -14,11 +13,10 @@ import { extraerErroresFormulario } from '../../funciones/extraerErrores';
   styles: ``
 })
 export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
-  constructor(private headerService: HeaderService,private http: HttpClient,private router: Router ) {}
+  constructor(private http: HttpClient,private router: Router ) {}
   
   ngOnInit(): void {
-    const headers = this.headerService.getHeaders();
-    this.http.get(environment.apiUrl+this.rutaListado+'/'+this.id, { headers }).subscribe(entidad => {
+    this.http.get(environment.apiUrl+this.rutaListado+'/'+this.id).subscribe(entidad => {
       this.cargarComponente(entidad);
     })
   }
@@ -26,6 +24,7 @@ export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
     if (this.contenedorFormulario){
       this.componentRef = this.contenedorFormulario.createComponent(this.formulario);
       this.componentRef.instance.modelo = entidad;
+      this.componentRef.instance.modoEdicion = true;
       this.componentRef.instance.posteoFormulario.subscribe((entidad: any) => {
         this.guardarCambios(entidad);
       })
@@ -53,8 +52,7 @@ export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
   contenedorFormulario!: ViewContainerRef;
   private componentRef!: ComponentRef<any>;
   guardarCambios(entidad: TCreacionDTO) {
-    const headers = this.headerService.getHeaders();
-    this.http.put<TDTO>(environment.apiUrl+this.rutaListado+'/'+this.id , entidad, { headers }).subscribe({
+    this.http.put<TDTO>(environment.apiUrl+this.rutaListado+'/'+this.id , entidad).subscribe({
           next: (response) => {
         this.router.navigate(['/'+this.rutaListado]);
       },

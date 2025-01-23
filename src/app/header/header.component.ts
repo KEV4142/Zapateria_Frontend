@@ -40,6 +40,12 @@ export class HeaderComponent implements OnInit {
   optTablero():void{
     this.router.navigate(['/dashboard'])
   }
+  optCategorias(): void {
+    this.router.navigate(['/categorias']);
+  }
+  optProductos(): void {
+    this.router.navigate(['/productos']);
+  }
   salir(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

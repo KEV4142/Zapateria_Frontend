@@ -7,7 +7,12 @@
       <nav>
         <ul class="flex space-x-6">
           <li><a class="text-lg text-blue-500 hover:underline" (click)="optTablero()">Dashboard</a></li>
-         
+          <li *ngIf="isAdmin()">
+            <a class="text-lg text-blue-500 hover:underline" (click)="optCategorias()">Registro de Categorias</a>
+          </li>
+          <li *ngIf="isAdmin()">
+            <a class="text-lg text-blue-500 hover:underline" (click)="optProductos()">Registro de Productos</a>
+          </li>
           <li>
             <a class="text-lg text-blue-500 hover:underline" (click)="salir()">Salir</a>
           </li>

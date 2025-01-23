@@ -6,10 +6,11 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { ListadoGenericoComponent } from '../listado-generico/listado-generico.component';
 import { PaginacionDTO } from '../interfaces/modeloPaginacion/paginacion-dto';
-import { HeaderService } from '../../header.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { construirQueryParams } from '../../funciones/construirQueryParams';
+import { MatDialog } from '@angular/material/dialog';
+import { CuadroConfirmacionComponent } from '../cuadro-confirmacion/cuadro-confirmacion.component';
 
 @Component({
   selector: 'app-listado-general',
@@ -37,7 +38,7 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
   entidades!: TDTO[];
   cantidadTotalRegistros!: number;
 
-  constructor(private headerService: HeaderService,private http: HttpClient) {}
+  constructor(private dialog: MatDialog,private http: HttpClient) {}
 
   ngOnInit(): void {
     if (!this.rutaBackend) {
@@ -51,17 +52,32 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
     this.cargarRegistros();
 
   }
+  openConfirmDialog(id:number) {
+    const dialogRef = this.dialog.open(CuadroConfirmacionComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmación',
+        text: '¿Deseas bloquear este registro?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.borrar(id);
+      }
+    });
+  }
   borrar(id: number) {
-    const headers = this.headerService.getHeaders();
     this.http.put<TDTO>(environment.apiUrl+this.rutaBackend+'/estado/'+id , {
       "estado": "b"
-    }, { headers }).subscribe(() => {
+    }).subscribe(() => {
       this.cargarRegistros();
     })
   }
-  primeraLetraEnMayuscula(valor: string){
-    if (!valor) return valor;
-    return valor.charAt(0).toUpperCase() + valor.slice(1);
+  primeraLetraEnMayuscula(valor: any): string{
+    if (!valor || typeof valor !== 'string') return valor;
+    let resultado=valor.toLowerCase();
+    return resultado.charAt(0).toUpperCase() + resultado.slice(1);
   }
   cargarRegistros() {
     let queryParams = construirQueryParams(this.paginacion);
@@ -73,7 +89,7 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
       totalCount: number; 
       items: TDTO[] 
     }
-    >(environment.apiUrl+this.rutaBackend+'/paginacion', {headers: this.headerService.getHeaders(), params: queryParams}).subscribe((respuesta) => {
+    >(environment.apiUrl+this.rutaBackend+'/paginacion', { params: queryParams}).subscribe((respuesta) => {
       this.entidades = respuesta.items;
       this.cantidadTotalRegistros = respuesta.totalCount;
     });

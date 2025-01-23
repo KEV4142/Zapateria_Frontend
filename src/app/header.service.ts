@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { HttpHeaders } from '@angular/common/http';
+import {
+  HttpHandlerFn,
+  HttpHeaders,
+  HttpInterceptorFn,
+  HttpRequest,
+} from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HeaderService {
-
   constructor(private authService: AuthService) {}
 
   getHeaders(): HttpHeaders {
@@ -16,4 +20,5 @@ export class HeaderService {
     }
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
+
 }

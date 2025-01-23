@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ComponentRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { MostrarErroresComponent } from '../mostrar-errores/mostrar-errores.component';
-import { HeaderService } from '../../header.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -14,7 +13,7 @@ import { extraerErroresFormulario } from '../../funciones/extraerErrores';
 })
 export class CreacionRegistroComponent<TDTO, TCreacionDTO> implements AfterViewInit{
   private componentRef!: ComponentRef<any>;
-  constructor(private headerService: HeaderService,private http: HttpClient,private router: Router ) {}
+  constructor(private http: HttpClient,private router: Router ) {}
   ngAfterViewInit(): void {
     this.componentRef = this.contenedorFormulario.createComponent(this.formulario);
     this.componentRef.instance.posteoFormulario.subscribe((entidad: any) => {
@@ -37,8 +36,7 @@ export class CreacionRegistroComponent<TDTO, TCreacionDTO> implements AfterViewI
   contenedorFormulario!: ViewContainerRef;
 
   guardarCambios(entidad: TCreacionDTO) {
-    const headers = this.headerService.getHeaders();
-    this.http.post<TDTO>(environment.apiUrl+this.rutaListado+'/registro' , entidad, { headers }).subscribe({
+    this.http.post<TDTO>(environment.apiUrl+this.rutaListado+'/registro' , entidad).subscribe({
           next: (response) => {
         this.router.navigate(['/'+this.rutaListado]);
       },
