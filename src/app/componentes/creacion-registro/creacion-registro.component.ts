@@ -35,7 +35,7 @@ export class CreacionRegistroComponent<TDTO, TCreacionDTO> implements AfterViewI
   @ViewChild('contenedorFormulario', {read: ViewContainerRef})
   contenedorFormulario!: ViewContainerRef;
 
-  guardarCambios(entidad: TCreacionDTO) {
+  guardarCambios(entidad: FormData | TCreacionDTO) {
     this.http.post<TDTO>(environment.apiUrl+this.rutaListado+'/registro' , entidad).subscribe({
           next: (response) => {
         this.router.navigate(['/'+this.rutaListado]);

@@ -47,7 +47,7 @@
           </ng-container>
 
           <ng-template #checkEstado>
-            <ng-container *ngIf="columna === 'estado'; else defaultColumn">
+            <ng-container *ngIf="columna === 'estado'; else categoriaDescripcion">
               <ng-container matColumnDef="estado">
                 <th
                   class="bg-gray-200 text-left px-4 py-2 font-semibold"
@@ -75,6 +75,27 @@
             </ng-container>
           </ng-template>
 
+          <ng-template #categoriaDescripcion>
+          <ng-container *ngIf="columna === 'categoriaDescripcion'; else defaultColumn">
+            <ng-container matColumnDef="categoriaDescripcion">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="bg-gray-200 text-left px-4 py-2 font-semibold"
+              >
+                Categoría
+              </th>
+              <td
+                class="px-4 py-2 border-b border-gray-300"
+                mat-cell
+                *matCellDef="let elemento"
+              >
+                {{ primeraLetraEnMayuscula(elemento.categoria?.descripcion) || 'Sin categoría' }}
+              </td>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+
           <ng-template #defaultColumn>
             <ng-container matColumnDef="{{ columna }}">
               <th
@@ -96,7 +117,9 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columnasAMostrar"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnasAMostrar"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasAMostrar" 
+        class="odd:bg-gray-100 even:bg-gray-200 hover:bg-blue-50 cursor-pointer"
+        ></tr>
       </table>
 
       <mat-paginator

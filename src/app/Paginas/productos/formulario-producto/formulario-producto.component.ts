@@ -7,7 +7,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,8 +43,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FormularioProductoComponent implements OnInit {
   categorias: Categoria[] = [];
+  archivoImagen: File | null = null;
   private formBuilder = inject(FormBuilder);
-    
+
   opciones: Opcion[] = [
     { name: 'Activo', abr: 'A' },
     { name: 'Bloqueado', abr: 'B' },
@@ -47,8 +54,8 @@ export class FormularioProductoComponent implements OnInit {
 
   @Input() modoEdicion: boolean = false;
   @Input() modelo?: ProductoDTO;
-  @Output() posteoFormulario = new EventEmitter<ProductoCreacionDTO>();
-
+  @Output() posteoFormulario = new EventEmitter<FormData | ProductoDTO>();
+  
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -64,18 +71,24 @@ export class FormularioProductoComponent implements OnInit {
   }
 
   loadCategorias() {
-    this.http.get<Categoria[]>(environment.apiUrl+'categorias/activos',).subscribe((data: Categoria[]) => {
-      this.categorias = data;
-    });
+    this.http
+      .get<Categoria[]>(environment.apiUrl + 'categorias/activos')
+      .subscribe((data: Categoria[]) => {
+        this.categorias = data;
+      });
+      
+
   }
 
   sel: string = '';
 
   form = this.formBuilder.group({
-    descripcion: ['',{validators: [Validators.required]}],
-    precio: new FormControl<number | null>(null),
-    categoriaid: new FormControl<number | null>( null, {
-      validators: [Validators.required]
+    descripcion: ['', { validators: [Validators.required] }],
+    precio: new FormControl<number | null>(null, {
+      validators: [Validators.required, Validators.min(1)],
+    }),
+    categoriaid: new FormControl<number | null>(null, {
+      validators: [Validators.required, Validators.min(1)],
     }),
     estado: [''],
   });
@@ -87,15 +100,25 @@ export class FormularioProductoComponent implements OnInit {
     }
     return '';
   }
-  obtenerErrorCampoCategoriaID(){
+  obtenerErrorCampoPrecio() {
+    let campo = this.form.controls.precio;
+    if (campo.hasError('required')) {
+      return 'El campo Precio es requerido.';
+    }
+    if (campo.hasError('min')) {
+      return 'El campo Precio debe ser mayor a 0.';
+    }
+    return '';
+  }
+  obtenerErrorCampoCategoriaID() {
     let campo = this.form.controls.categoriaid;
-    if (campo.hasError('required')){
+    if (campo.hasError('required')) {
       return 'El campo Categoria es requerido';
     }
-    if (campo.hasError('min')){
+    if (campo.hasError('min')) {
       return 'El campo Categoria debe estar seleccionado.';
     }
-    return "";
+    return '';
   }
   obtenerErrorCampoEstado() {
     const campo = this.form.controls.estado;
@@ -103,6 +126,29 @@ export class FormularioProductoComponent implements OnInit {
       return 'El campo Estado es obligatorio.';
     }
     return '';
+  }
+  primeraLetraEnMayuscula(valor: any): string{
+    if (!valor || typeof valor !== 'string') return valor;
+    let resultado=valor.toLowerCase();
+    return resultado.charAt(0).toUpperCase() + resultado.slice(1);
+  }
+  onFileSeleccionado(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const allowedTypes = ['image/webp'];
+
+      if (!allowedTypes.includes(file.type)) {
+        console.error('Solo se permiten archivos WEBP.');
+        return;
+      }
+
+      if (file.size > 1 * 1024 * 1024) {
+        console.error('El archivo no debe superar 1 MB.');
+        return;
+      }
+      this.archivoImagen = file;
+    }
   }
 
   guardarCambios() {
@@ -114,12 +160,19 @@ export class FormularioProductoComponent implements OnInit {
       const producto: ProductoDTO = this.form.value as ProductoDTO;
       this.posteoFormulario.emit(producto);
     } else {
-      const producto: ProductoCreacionDTO = {
-        descripcion: this.form.value.descripcion!,
-        precio: this.form.value.precio || null,
-        categoriaID: this.form.value.categoriaid!
-      };
-      this.posteoFormulario.emit(producto);
+      const formData = new FormData();
+      formData.append('descripcion', this.form.value.descripcion!);
+      formData.append('precio', this.form.value.precio!.toString());
+      formData.append('categoriaid', this.form.value.categoriaid!.toString());
+
+      if (this.archivoImagen) {
+        formData.append(
+          'imagenProducto',
+          this.archivoImagen,
+          this.archivoImagen.name
+        );
+      }
+      this.posteoFormulario.emit(formData);
     }
   }
 }

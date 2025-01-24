@@ -7,7 +7,7 @@ export interface CategoriaCreacionDTO {
   descripcion: string;
 }
 export interface Categoria {
-  categoriaID: number;
+  categoriaid: number;
   descripcion: string;
   estado: string;
 }

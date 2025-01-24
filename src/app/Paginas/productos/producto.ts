@@ -1,14 +1,21 @@
-export interface ProductoDTO {
+export interface Producto {
   productoID: number;
-  descripcion: string | null;
-  precio: number | null;
+  descripcion: string;
+  precio: number;
   categoriaID: number;
   imagenID: number | null;
   estado: string;
 }
+export interface ProductoDTO {
+  productoID: number;
+  descripcion: string;
+  precio: number;
+  categoriaID: number;
+  estado: string;
+}
 export interface ProductoCreacionDTO {
-  descripcion: string | null;
-  precio: number | null;
+  descripcion: string;
+  precio: number;
   categoriaID: number;
 }
 

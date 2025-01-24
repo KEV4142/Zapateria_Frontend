@@ -50,7 +50,6 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
   actualizarPaginacion(datos: PageEvent) {
     this.paginacion = { PageNumber: datos.pageIndex + 1, PageSize: datos.pageSize };
     this.cargarRegistros();
-
   }
   openConfirmDialog(id:number) {
     const dialogRef = this.dialog.open(CuadroConfirmacionComponent, {
@@ -93,5 +92,6 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
       this.entidades = respuesta.items;
       this.cantidadTotalRegistros = respuesta.totalCount;
     });
+    
   }
 }
