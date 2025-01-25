@@ -1,26 +1,13 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { Opcion, ProductoCreacionDTO, ProductoDTO } from '../producto';
+import { Opcion, ProductoDTO } from '../producto';
 import { Categoria } from '../../categorias/categoria';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -55,7 +42,7 @@ export class FormularioProductoComponent implements OnInit {
   @Input() modoEdicion: boolean = false;
   @Input() modelo?: ProductoDTO;
   @Output() posteoFormulario = new EventEmitter<FormData | ProductoDTO>();
-  
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -76,8 +63,6 @@ export class FormularioProductoComponent implements OnInit {
       .subscribe((data: Categoria[]) => {
         this.categorias = data;
       });
-      
-
   }
 
   sel: string = '';
@@ -127,9 +112,9 @@ export class FormularioProductoComponent implements OnInit {
     }
     return '';
   }
-  primeraLetraEnMayuscula(valor: any): string{
+  primeraLetraEnMayuscula(valor: any): string {
     if (!valor || typeof valor !== 'string') return valor;
-    let resultado=valor.toLowerCase();
+    let resultado = valor.toLowerCase();
     return resultado.charAt(0).toUpperCase() + resultado.slice(1);
   }
   onFileSeleccionado(event: Event) {

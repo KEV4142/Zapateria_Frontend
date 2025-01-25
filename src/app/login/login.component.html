@@ -1,6 +1,10 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
       <h1 class="text-lime-900 font-black text-xl capitalize md:flex md:justify-center">Inicio de sesión</h1>
+      <div *ngIf="cargando" class="flex items-center justify-center mb-4">
+        <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
+        </mat-progress-spinner>
+      </div>
       <form [formGroup]="loginForm" class="my-10 bg-white shadow rounded-lg px-10 py-2" (ngSubmit)="onSubmit()">
         <div class="my-5">
           <label for="email" class="uppercase text-gray-600 block text-xl font-bold">Correo electrónico</label>

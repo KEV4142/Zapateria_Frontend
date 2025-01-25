@@ -1,4 +1,10 @@
 <div class="container mx-auto p-6 bg-gray-50 shadow-md rounded-lg">
+
+  <div *ngIf="cargando" class="flex items-center justify-center mb-4">
+    <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
+    </mat-progress-spinner>
+  </div>
+
   <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ titulo }}</h2>
 
   <button
@@ -22,7 +28,7 @@
               <th
                 mat-header-cell
                 *matHeaderCellDef
-                class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                class="bg-gray-200 text-center px-4 py-2 font-semibold"
               >
                 Acciones
               </th>
@@ -33,24 +39,40 @@
               >
                 <a
                   routerLink="{{
-                    rutaEditar + '/' + elemento[columnasAMostrar[0]]
+                    rutaEditar + '/' + elemento[campoID]
                   }}"
-                  mat-flat-button
-                  class="text-blue-500 hover:underline font-medium"
-                  >Editar</a
+                  mat-icon-button
                 >
-                <button mat-flat-button color="warn" class="ml-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-200"
-                  (click)="openConfirmDialog(elemento[columnasAMostrar[0]])"
-                >Bloquear</button>
+                  <mat-icon color="primary">edit</mat-icon>
+                </a>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  class="ml-2"
+                  aria-label="Bloquear"
+                  (click)="openConfirmDialog(elemento[campoID])"
+                >
+                  <mat-icon>block</mat-icon>
+                </button>
+                
+                <a *ngIf="columnasAMostrar.includes('imagenid')"
+                  routerLink="{{
+                    rutaEditar + '/' + elemento[campoID]
+                  }}"
+                  mat-icon-button>
+                  <mat-icon color="primary">image</mat-icon>
+                </a>
               </td>
             </ng-container>
           </ng-container>
 
           <ng-template #checkEstado>
-            <ng-container *ngIf="columna === 'estado'; else categoriaDescripcion">
+            <ng-container
+              *ngIf="columna === 'estado'; else categoriaDescripcion"
+            >
               <ng-container matColumnDef="estado">
                 <th
-                  class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                  class="bg-gray-200 text-center px-4 py-2 font-semibold"
                   mat-header-cell
                   *matHeaderCellDef
                 >
@@ -76,30 +98,56 @@
           </ng-template>
 
           <ng-template #categoriaDescripcion>
-          <ng-container *ngIf="columna === 'categoriaDescripcion'; else defaultColumn">
-            <ng-container matColumnDef="categoriaDescripcion">
-              <th
-                mat-header-cell
-                *matHeaderCellDef
-                class="bg-gray-200 text-left px-4 py-2 font-semibold"
-              >
-                Categoría
-              </th>
-              <td
-                class="px-4 py-2 border-b border-gray-300"
-                mat-cell
-                *matCellDef="let elemento"
-              >
-                {{ primeraLetraEnMayuscula(elemento.categoria?.descripcion) || 'Sin categoría' }}
-              </td>
+            <ng-container
+              *ngIf="columna === 'categoriaDescripcion'; else imagenid"
+            >
+              <ng-container matColumnDef="categoriaDescripcion">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="bg-gray-200 text-center px-4 py-2 font-semibold"
+                >
+                  Categoría
+                </th>
+                <td
+                  class="px-4 py-2 border-b border-gray-300"
+                  mat-cell
+                  *matCellDef="let elemento"
+                >
+                  {{
+                    primeraLetraEnMayuscula(elemento.categoria?.descripcion) ||
+                      "Sin categoría"
+                  }}
+                </td>
+              </ng-container>
             </ng-container>
-          </ng-container>
-        </ng-template>
+          </ng-template>
+
+          <ng-template #imagenid>
+            <ng-container *ngIf="columna === 'imagenid'; else defaultColumn">
+              <ng-container matColumnDef="imagenid">
+                <th
+                  class="bg-gray-200 text-center px-4 py-2 font-semibold"
+                  mat-header-cell
+                  *matHeaderCellDef
+                >
+                  Imagen
+                </th>
+                <td
+                  class="px-4 py-2 border-b border-gray-300"
+                  mat-cell
+                  *matCellDef="let elemento"
+                >
+                  {{ elemento[columna] > 0 ? 'Si' : 'No' }}
+                </td>
+              </ng-container>
+            </ng-container>
+          </ng-template>
 
           <ng-template #defaultColumn>
             <ng-container matColumnDef="{{ columna }}">
               <th
-                class="bg-gray-200 text-left px-4 py-2 font-semibold"
+                class="bg-gray-200 text-center px-4 py-2 font-semibold"
                 mat-header-cell
                 *matHeaderCellDef
               >
@@ -117,8 +165,10 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columnasAMostrar"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnasAMostrar" 
-        class="odd:bg-gray-100 even:bg-gray-200 hover:bg-blue-50 cursor-pointer"
+        <tr
+          mat-row
+          *matRowDef="let row; columns: columnasAMostrar"
+          class="odd:bg-gray-100 even:bg-gray-200 hover:bg-blue-50 cursor-pointer"
         ></tr>
       </table>
 

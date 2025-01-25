@@ -9,5 +9,5 @@ import { HeaderComponent } from '../../../header/header.component';
   styles: ``
 })
 export class ListadoCategoriasComponent {
-  columnas = ['categoriaid','descripcion', 'estado', 'acciones'];
+  columnas = ['descripcion', 'estado', 'acciones'];
 }

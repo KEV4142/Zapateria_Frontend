@@ -4,14 +4,16 @@ import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,MatProgressSpinnerModule],
   templateUrl: './login.component.html',
   styles: ``
 })
 export class LoginComponent {
+  cargando: boolean = false;
   loginForm: FormGroup;
   errorMessage: string = '';
 
@@ -31,9 +33,11 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
+      this.cargando = true;
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({
         next: (response) => {
+          this.cargando = false;
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {

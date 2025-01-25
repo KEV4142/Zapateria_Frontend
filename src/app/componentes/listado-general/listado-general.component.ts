@@ -11,14 +11,19 @@ import { environment } from '../../../environments/environment';
 import { construirQueryParams } from '../../funciones/construirQueryParams';
 import { MatDialog } from '@angular/material/dialog';
 import { CuadroConfirmacionComponent } from '../cuadro-confirmacion/cuadro-confirmacion.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-listado-general',
-  imports: [CommonModule,RouterLink, MatButtonModule, ListadoGenericoComponent, MatTableModule, MatPaginatorModule],
+  imports: [CommonModule,RouterLink, MatButtonModule, ListadoGenericoComponent, MatTableModule, MatPaginatorModule,MatProgressSpinnerModule,MatIconModule],
   templateUrl: './listado-general.component.html',
   styles: ``
 })
 export class ListadoGeneralComponent<TDTO> implements OnInit {
+  cargando: boolean = false;
+
   @Input({required: true})
   titulo!: string;
 
@@ -34,11 +39,14 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
   @Input({required: true}) 
   columnasAMostrar!: string[];
 
+  @Input({required: true})
+  campoID!: string;
+
   paginacion: PaginacionDTO = { PageNumber: 1, PageSize: 5 };
   entidades!: TDTO[];
   cantidadTotalRegistros!: number;
 
-  constructor(private dialog: MatDialog,private http: HttpClient) {}
+  constructor(private dialog: MatDialog,private http: HttpClient,private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     if (!this.rutaBackend) {
@@ -67,9 +75,16 @@ export class ListadoGeneralComponent<TDTO> implements OnInit {
     });
   }
   borrar(id: number) {
+    this.cargando = true;
     this.http.put<TDTO>(environment.apiUrl+this.rutaBackend+'/estado/'+id , {
       "estado": "b"
     }).subscribe(() => {
+      this.cargando = false;
+      this.snackBar.open('Bloqueo de Registro Exitoso.', 'Cerrar', {
+        duration: 1500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
       this.cargarRegistros();
     })
   }

@@ -1,8 +1,8 @@
-<h2 class="text-2xl font-bold mb-6 text-center">{{titulo}}</h2>
+<h2 class="text-2xl font-bold mb-6 text-center">{{ titulo }}</h2>
 
 <app-mostrar-errores [errores]="errores"></app-mostrar-errores>
+<div *ngIf="cargando" class="flex items-center justify-center mb-4">
+  <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
+  </mat-progress-spinner>
+</div>
 <ng-template #contenedorFormulario></ng-template>
-
-@if (cargando){
-    <app-cargando></app-cargando>
-}
