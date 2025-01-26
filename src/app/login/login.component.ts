@@ -41,6 +41,7 @@ export class LoginComponent {
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
+          this.cargando = false;
           this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
           setTimeout(() => {
             this.errorMessage = '';
