@@ -11,14 +11,14 @@ import {
   providedIn: 'root',
 })
 export class HeaderService {
-  constructor(private authService: AuthService) {}
+  private token: string="";
+  constructor(private authService: AuthService) {this.token = this.authService.getToken()!;}
 
   getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    if (!token) {
+    if (!this.token) {
       throw new Error('Sin Autorización!');
     }
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
   }
 
 }

@@ -13,6 +13,12 @@ export interface ProductoDTO {
   categoriaID: number;
   estado: string;
 }
+export interface ProductoImagenDTO {
+  productoID: number;
+  descripcion: string;
+  categoria: string;
+  url: string;
+}
 export interface ProductoCreacionDTO {
   descripcion: string;
   precio: number;

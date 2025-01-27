@@ -64,15 +64,14 @@ export class AuthService {
     return this.getToken() !== null;
   }
   isAdministrador(): boolean{
-    this.getUserDetails();
     return this.Tipo === 'Administrador';
   }
   isOperador(): boolean{
-    this.getUserDetails();
     return this.Tipo === 'Operador';
   }
   logout(): void {
-    sessionStorage.removeItem('authToken');
+    // sessionStorage.removeItem('authToken');
+    sessionStorage.clear();
   }
   
 }

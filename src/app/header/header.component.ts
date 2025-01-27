@@ -1,27 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
+  imports: [CommonModule,MatButtonModule, MatMenuModule, MatToolbarModule,MatIconModule],
   templateUrl: './header.component.html',
   styles: ``
 })
 export class HeaderComponent implements OnInit {
-  userName: string | undefined;
   userType: string | undefined;
+  isSmallScreen: boolean = false;
 
-  constructor(private authService: AuthService,private router: Router) {}
-
+  constructor(private authService: AuthService,private router: Router) {this.checkScreenSize();}
+  @HostListener('window:resize', [])
+  onResize(): void {
+    this.checkScreenSize();
+  }
+  private checkScreenSize(): void {
+    this.isSmallScreen = window.innerWidth < 1024;
+  }
   ngOnInit(): void {
     this.loadUserDetails();
   }
   loadUserDetails(): void {
     this.authService.getUserDetails().subscribe({
       next: (response) => {
-        this.userName = response.nombreCompleto;
         this.userType = response.tipo;
       },
       error: (erro) => {
@@ -31,12 +40,9 @@ export class HeaderComponent implements OnInit {
   });
   }
   isAdmin(): boolean {
-    return this.authService.isAdministrador();
+    return this.userType === "Administrador";
   }
 
-  isOperator(): boolean {
-    return this.userType === 'Operador';
-  }
   optTablero():void{
     this.router.navigate(['/dashboard'])
   }

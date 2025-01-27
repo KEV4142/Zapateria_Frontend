@@ -18,7 +18,10 @@ export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
   constructor(private http: HttpClient,private router: Router,private snackBar: MatSnackBar ) {}
   
   ngOnInit(): void {
-    this.http.get(environment.apiUrl+this.rutaListado+'/'+this.id).subscribe(entidad => {
+    this.ruta = this.imagen ? 
+    environment.apiUrl+this.rutaListado+'/imagen/'+this.id :
+    environment.apiUrl+this.rutaListado+'/'+this.id ;
+    this.http.get(this.ruta).subscribe(entidad => {
       this.cargarComponente(entidad);
     })
   }
@@ -37,6 +40,9 @@ export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
   @Input()
   id!: number;
 
+  @Input()
+  imagen: boolean=false;
+
   @Input({required: true})
   titulo!: string;
 
@@ -48,14 +54,17 @@ export class EdicionRegistroComponent<TDTO, TCreacionDTO> implements OnInit{
 
   errores: string = '';
 
-  cargando: boolean = true;
+  cargando: boolean = false;
+
+  private ruta : string = "";
 
   @ViewChild('contenedorFormulario', {read: ViewContainerRef})
   contenedorFormulario!: ViewContainerRef;
   private componentRef!: ComponentRef<any>;
-  guardarCambios(entidad: TCreacionDTO) {
+
+  guardarCambios(entidad: FormData | TCreacionDTO) {
     this.cargando = true;
-    this.http.put<TDTO>(environment.apiUrl+this.rutaListado+'/'+this.id , entidad).subscribe({
+    this.http.put<TDTO>(this.ruta, entidad).subscribe({
           next: (response) => {
             this.cargando = false;
             this.snackBar.open('Registro actualizado exitosamente', 'Cerrar', {

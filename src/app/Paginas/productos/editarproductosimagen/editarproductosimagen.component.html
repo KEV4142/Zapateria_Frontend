@@ -1,1 +1,10 @@
-<p>editarproductosimagen works!</p>
+<app-header></app-header>
+<main class="flex-grow container mx-auto p-6 space-y-6">
+<app-edicion-registro 
+[formulario]="formularioproductosimagen"
+[imagen]="true"
+titulo="Editar Imagen de Producto" 
+rutaListado="productos"
+[id]="id"
+></app-edicion-registro>
+</main>

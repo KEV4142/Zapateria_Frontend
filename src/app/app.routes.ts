@@ -9,6 +9,7 @@ import { EditarCategoriasComponent } from './Paginas/categorias/editar-categoria
 import { ListadoproductosComponent } from './Paginas/productos/listadoproductos/listadoproductos.component';
 import { CrearproductosComponent } from './Paginas/productos/crearproductos/crearproductos.component';
 import { EditarproductosComponent } from './Paginas/productos/editarproductos/editarproductos.component';
+import { EditarproductosimagenComponent } from './Paginas/productos/editarproductosimagen/editarproductosimagen.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -20,5 +21,6 @@ export const routes: Routes = [
   { path: 'productos', component: ListadoproductosComponent, canActivate: [AuthGuard] },
   { path: 'productos/crear', component: CrearproductosComponent, canActivate: [AuthGuard] },
   { path: 'productos/editar/:id', component: EditarproductosComponent, canActivate: [AuthGuard] },
+  { path: 'productos/editarimagen/:id', component: EditarproductosimagenComponent, canActivate: [AuthGuard] },
   { path: '**', component: NotFoundComponent },
 ];
