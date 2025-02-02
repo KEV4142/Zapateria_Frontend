@@ -42,7 +42,13 @@ export class LoginComponent {
         },
         error: (err) => {
           this.cargando = false;
-          this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
+          if (err.status === 500) {
+            this.errorMessage = 'Error interno del servidor. Intente nuevamente más tarde.';
+          } else if (err.status === 401) {
+            this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
+          } else {
+            this.errorMessage = 'Ocurrió un error inesperado. Intente nuevamente.';
+          }
           setTimeout(() => {
             this.errorMessage = '';
           }, 5000);

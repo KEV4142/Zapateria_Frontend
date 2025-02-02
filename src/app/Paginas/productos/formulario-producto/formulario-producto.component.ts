@@ -46,7 +46,7 @@ export class FormularioProductoComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.loadCategorias();
+    this.loadCategorias(this.modoEdicion);
     if (this.modoEdicion && this.modelo) {
       this.form.patchValue(this.modelo);
       this.form.controls.estado.setValidators([Validators.required]);
@@ -57,9 +57,11 @@ export class FormularioProductoComponent implements OnInit {
     }
   }
 
-  loadCategorias() {
+  loadCategorias(todos: boolean=false) {
+    let ruta: string=environment.apiUrl;
+    ruta = todos ? ruta+'categorias/listado' : ruta+'categorias/activos';
     this.http
-      .get<Categoria[]>(environment.apiUrl + 'categorias/activos')
+      .get<Categoria[]>(ruta)
       .subscribe((data: Categoria[]) => {
         this.categorias = data;
       });
